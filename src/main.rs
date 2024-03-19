@@ -1,4 +1,4 @@
-use gpui::*;
+use gpui::{prelude::FluentBuilder, *};
 
 mod state;
 
@@ -27,12 +27,20 @@ impl RenderOnce for Sidebar {
             .id(1)
             .w_10()
             .h_10()
-            .bg(match self.bg_color {
-                Some(bg) => bg,
-                None => rgba(0xff0000)
+            // .bg(match self.bg_color {
+            //     Some(bg) => bg,
+            //     None => rgba(0xff0000)
+            // })
+            .when_some(self.bg_color, |this, bg_color| {
+                println!("some {:?}", bg_color);
+                this.bg(bg_color)
             })
             .on_click(move |_this, cx| {
-                self.update(rgba(0x00ff00), cx);
+                println!("Clicked");
+                state::ComponentState::update::<Rgba>(&"sidebar", |this, _| {
+                    println!("update {:?}", rgba(0x00ff00));
+                    *this = rgba(0x00ff00);
+                }, cx)
             })
     }
 }

@@ -19,7 +19,7 @@ impl ComponentState {
         this
     }
 
-    pub fn add<T: 'static + Any>(
+    pub fn add<T: 'static + Any + Clone>(
         key: &'static str,
         initial_value: T,
         cx: &mut WindowContext
@@ -33,7 +33,7 @@ impl ComponentState {
         cx.update_global::<Self, _>(|this, cx| {
             if !this.types.contains_key(key) || this.types[key] == type_id {
                 this.states.update(cx, |this, cx| {
-                    this.insert(key, Box::new(initial_value));
+                    this.insert(key, Box::new(initial_value.clone()));
                     cx.notify();
                 });
                 this.types.insert(key, type_id);
