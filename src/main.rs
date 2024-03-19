@@ -10,7 +10,7 @@ struct Sidebar {
 impl Sidebar {
     fn build(cx: &mut WindowContext) -> Self {
         Self {
-            bg_color: state::ComponentState::add(&"sidebar", rgb(0xff0000), cx)
+            bg_color: state::ComponentState::add(&"sidebar", rgb(0x0000ff), cx)
         }
     }
 
@@ -25,6 +25,12 @@ impl RenderOnce for Sidebar {
     fn render(self, _cx: &mut WindowContext) -> impl IntoElement {
         div()
             .id(1)
+            .w_10()
+            .h_10()
+            .bg(match self.bg_color {
+                Some(bg) => bg,
+                None => rgba(0xff0000)
+            })
             .on_click(|_this, cx,| {
                 self.update(rgba(0x00ff00), cx);
             })
@@ -74,6 +80,8 @@ fn main() {
                 ..Default::default()
             },
             |cx| {
+                state::ComponentState::init(cx);
+
                 cx.new_view(|_cx| MyApp {
                     is_pressed: false,
                 })
