@@ -19,7 +19,7 @@ impl ComponentState {
         this
     }
 
-    pub fn add<T: 'static + Any + Clone>(
+    pub fn add<T: 'static + Any + Clone + core::fmt::Debug>(
         key: &'static str,
         initial_value: T,
         cx: &mut WindowContext
@@ -30,17 +30,26 @@ impl ComponentState {
 
         let type_id = TypeId::of::<T>();
 
+        let mut existing: Option<T> = None;
+
         cx.update_global::<Self, _>(|this, cx| {
             if !this.types.contains_key(key) || this.types[key] == type_id {
+                println!("!existed {}", key);
                 this.states.update(cx, |this, cx| {
                     this.insert(key, Box::new(initial_value.clone()));
-                    cx.notify();
                 });
                 this.types.insert(key, type_id);
+            } else if let Some(boxed_any) = this.states.read(cx).get(key) {
+                println!("existed {}", key);
+                if let Some(value) = boxed_any.downcast_ref::<T>() {
+                    existing = Some(value.clone());
+                }
             }
         });
 
-        Some(initial_value)
+        println!("current value: {:?}", existing.clone().or(Some(initial_value.clone())));
+
+        existing.or(Some(initial_value))
     }
 
     pub fn update<T: 'static + Any>(
@@ -61,7 +70,6 @@ impl ComponentState {
                         if let Some(any) = this.get_mut(key) {
                             if let Some(value) = any.downcast_mut::<T>() {
                                 f(value, _cx);
-                                _cx.notify();
                             }
                         }
                     })
