@@ -39,7 +39,7 @@ impl RenderOnce for Sidebar {
                 println!("Clicked");
                 state::ComponentState::update::<Rgba>(&"sidebar", |this, _| {
                     println!("update {:?}", rgba(0x00ff00));
-                    *this = rgba(0x00ff00);
+                    *this = rgb(0x00ff00);
                 }, cx)
             })
     }

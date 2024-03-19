@@ -33,7 +33,10 @@ impl ComponentState {
         let mut existing: Option<T> = None;
 
         cx.update_global::<Self, _>(|this, cx| {
-            if !this.types.contains_key(key) || this.types[key] == type_id {
+
+            println!("states types: {:?}", this.types);
+
+            if !this.types.contains_key(key) || this.types[key] != type_id {
                 println!("!existed {}", key);
                 this.states.update(cx, |this, cx| {
                     this.insert(key, Box::new(initial_value.clone()));
