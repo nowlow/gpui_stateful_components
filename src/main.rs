@@ -31,7 +31,7 @@ impl RenderOnce for Sidebar {
                 Some(bg) => bg,
                 None => rgba(0xff0000)
             })
-            .on_click(|_this, cx| {
+            .on_click(move |_this, cx| {
                 self.update(rgba(0x00ff00), cx);
             })
     }
