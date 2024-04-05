@@ -1,6 +1,10 @@
+use std::time::Duration;
+
 use gpui::{prelude::FluentBuilder, *};
 
 mod state;
+
+mod animate;
 
 use state::State;
 
@@ -43,7 +47,6 @@ impl RenderOnce for StatefulSquare {
             .h_10()
             .justify_center()
             .items_center()
-            .when_some(self.bg_color.get(), |this, bg_color| this.bg(bg_color))
             .when_some(self.count.get(), |this, count| this.text_color(rgb( if count % 2 == 0 { 0xffffff } else { 0x000000 } )))
             .on_click(move |_this, cx| {
                 if let Some(count) = self.count.get() {
@@ -60,6 +63,9 @@ impl RenderOnce for StatefulSquare {
                 Some(count) => format!("{}", count).to_owned(),
                 _ => "0".to_owned()
             })
+            .with_animation("color", Animation::new(Duration::from_millis(200)), |this, delta| this.bg(rgb(delta)))
+            // .when_some(self.bg_color.get(), |this, bg_color| this.bg(bg_color))
+            
     }
 }
 
@@ -95,7 +101,7 @@ fn main() {
                 ..Default::default()
             },
             |cx| {
-                state::ComponentState::init(cx);
+                state::StateModel::init(cx);
 
                 cx.new_view(|_cx| MyApp {})
             },

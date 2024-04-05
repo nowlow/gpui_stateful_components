@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 gpui = { git = "https://github.com/zed-industries/zed" }
 hex = "0.4.3"
+num-traits = "0.2"
 
 [dependencies.uuid]
 version = "1.8.0"
